@@ -179,14 +179,14 @@ func autoConvertValue(value string) any {
 }
 
 func convertAccurateValue(value string, column_type ColumnType) (any, error) {
-	if value == "" {
-		return nil, nil
-	}
-
 	switch column_type {
 	case COLUMN_TYPE_STRING:
 		return value, nil
 	case COLUMN_TYPE_BOOL:
+		if value == "" {
+			return false, nil
+		}
+
 		bool_value, err := strconv.ParseBool(value)
 		if err != nil {
 			return nil, err
@@ -194,6 +194,10 @@ func convertAccurateValue(value string, column_type ColumnType) (any, error) {
 
 		return bool_value, nil
 	case COLUMN_TYPE_FLOAT:
+		if value == "" {
+			return 0.0, nil
+		}
+
 		float_value, err := strconv.ParseFloat(value, 64)
 		if err != nil {
 			return nil, err
@@ -201,6 +205,10 @@ func convertAccurateValue(value string, column_type ColumnType) (any, error) {
 
 		return float_value, nil
 	case COLUMN_TYPE_INT:
+		if value == "" {
+			return 0, nil
+		}
+
 		int_value, err := strconv.ParseInt(value, 10, 64)
 		if err != nil {
 			return nil, err
@@ -208,6 +216,10 @@ func convertAccurateValue(value string, column_type ColumnType) (any, error) {
 
 		return int_value, nil
 	case COLUMN_TYPE_JSON:
+		if value == "" {
+			return nil, nil
+		}
+
 		json_value := make(map[string]any)
 		err := json.Unmarshal([]byte(value), &json_value)
 		if err != nil {
