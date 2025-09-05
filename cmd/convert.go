@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"errors"
 	"os"
 
@@ -84,27 +83,9 @@ var (
 			}
 			defer output_file.Close()
 
-			if *convert_config.Pretty {
-				var json_map []map[string]any
-				err := json.Unmarshal(json_data, &json_map)
-				if err != nil {
-					return err
-				}
-
-				json_data, err = json.MarshalIndent(json_map, "", "  ")
-				if err != nil {
-					return err
-				}
-
-				_, err = output_file.Write(json_data)
-				if err != nil {
-					return err
-				}
-			} else {
-				_, err := output_file.Write(json_data)
-				if err != nil {
-					return err
-				}
+			_, err = output_file.Write(json_data)
+			if err != nil {
+				return err
 			}
 
 			return nil
