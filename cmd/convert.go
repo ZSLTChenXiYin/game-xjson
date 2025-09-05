@@ -71,6 +71,7 @@ var (
 				*convert_config.Sheet,
 				*convert_config.Types,
 				*convert_config.Descriptions,
+				*convert_config.Pretty,
 				*convert_config.IncrementID,
 			)
 			if err != nil {

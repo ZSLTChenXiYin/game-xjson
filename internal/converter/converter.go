@@ -9,7 +9,7 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-func ConvertXLSXToJSON(excel_file *excelize.File, sheet_name string, types bool, descriptions bool, increment_id bool) ([]byte, error) {
+func ConvertXLSXToJSON(excel_file *excelize.File, sheet_name string, types bool, descriptions bool, pretty bool, increment_id bool) ([]byte, error) {
 	// 检测excel文件对象
 	if excel_file == nil {
 		return nil, errors.New("excel文件对象不可为空")
@@ -131,22 +131,36 @@ func ConvertXLSXToJSON(excel_file *excelize.File, sheet_name string, types bool,
 		xlsx_json_maps[index_0][sheet] = sheet_json_maps
 	}
 
+	var xlsx_json_data []byte
+	var err error
 	// 返回json数据
 	if len(xlsx_json_maps) == 1 {
-		xlsx_json_data, err := json.Marshal(xlsx_json_maps[0][sheet_list[0]].([]map[string]any))
-		if err != nil {
-			return nil, err
+		if pretty {
+			xlsx_json_data, err = json.MarshalIndent(xlsx_json_maps[0][sheet_list[0]].([]map[string]any), "", "  ")
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			xlsx_json_data, err = json.Marshal(xlsx_json_maps[0][sheet_list[0]].([]map[string]any))
+			if err != nil {
+				return nil, err
+			}
 		}
-
-		return xlsx_json_data, nil
 	} else {
-		xlsx_json_data, err := json.Marshal(xlsx_json_maps)
-		if err != nil {
-			return nil, err
+		if pretty {
+			xlsx_json_data, err = json.MarshalIndent(xlsx_json_maps, "", "  ")
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			xlsx_json_data, err = json.Marshal(xlsx_json_maps)
+			if err != nil {
+				return nil, err
+			}
 		}
-
-		return xlsx_json_data, nil
 	}
+
+	return xlsx_json_data, nil
 }
 
 func autoConvertValue(value string) any {
